@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Guestbook - OYUCMS{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h1 class="text-2xl font-bold text-gray-900">Guestbook</h1>
+        <p class="text-sm text-gray-500 mt-1">Leave a note for the OYUCMS team.</p>
+
+        <form class="mt-4 flex gap-2" onsubmit="postComment(event)">
+            <input id="author" class="border rounded px-3 py-2 text-sm w-32" placeholder="Name" value="guest">
+            <input id="body" class="border rounded px-3 py-2 text-sm flex-1" placeholder="Write a message...">
+            <button class="bg-primary-600 text-white px-4 py-2 rounded text-sm">Post</button>
+        </form>
+
+        <div class="mt-6 space-y-4">
+            {% for c in comments %}
+            <div class="border-b pb-3">
+                <div class="text-xs text-gray-500">#{{ c.id }} · {{ c.author }} · {{ c.created_at }}</div>
+                <div class="mt-1 text-gray-800">{{ c.body|safe }}</div>
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-sm">No messages yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script>
+async function postComment(e) {
+  e.preventDefault();
+  const body = document.getElementById('body').value;
+  const author = document.getElementById('author').value;
+  await fetch('/oyu/api/comments', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({author, body})
+  });
+  location.reload();
+}
+</script>
+{% endblock %}

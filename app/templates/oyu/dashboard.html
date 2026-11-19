@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - OYUCMS{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+            <p class="text-sm text-gray-500 mt-1">Content overview and recent activity</p>
+        </div>
+        <div class="flex gap-2">
+            <a href="/" class="px-3 py-2 rounded bg-white border text-sm text-gray-700 hover:bg-gray-50">View site</a>
+            <a href="/oyu/comments" class="px-3 py-2 rounded bg-primary-600 text-white text-sm">Guestbook</a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-white border rounded-lg p-4">
+            <div class="text-xs uppercase text-gray-400">Posts</div>
+            <div class="text-2xl font-semibold text-gray-900 mt-1">{{ stats.posts }}</div>
+        </div>
+        <div class="bg-white border rounded-lg p-4">
+            <div class="text-xs uppercase text-gray-400">Users</div>
+            <div class="text-2xl font-semibold text-gray-900 mt-1">{{ stats.users }}</div>
+        </div>
+        <div class="bg-white border rounded-lg p-4">
+            <div class="text-xs uppercase text-gray-400">Guestbook</div>
+            <div class="text-2xl font-semibold text-gray-900 mt-1">{{ stats.comments }}</div>
+        </div>
+        <div class="bg-white border rounded-lg p-4">
+            <div class="text-xs uppercase text-gray-400">Orders</div>
+            <div class="text-2xl font-semibold text-gray-900 mt-1">{{ stats.orders }}</div>
+        </div>
+        <div class="bg-white border rounded-lg p-4">
+            <div class="text-xs uppercase text-gray-400">Coupons</div>
+            <div class="text-2xl font-semibold text-gray-900 mt-1">{{ stats.coupons }}</div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+        <div class="lg:col-span-2 bg-white border rounded-lg">
+            <div class="px-5 py-4 border-b">
+                <h2 class="font-semibold text-gray-900">Recent posts</h2>
+            </div>
+            <div class="divide-y">
+                {% for post in recent_posts %}
+                <div class="px-5 py-3 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-medium text-gray-900">{{ post.title }}</div>
+                        <div class="text-xs text-gray-500">{{ post.status }} · {{ post.created_at.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                    <a class="text-sm text-primary-600 hover:underline"
+                       href="{{ url_for('blog.post_detail', slug=post.slug) if post.status == 'published' else '#' }}">View</a>
+                </div>
+                {% else %}
+                <div class="px-5 py-6 text-sm text-gray-500">No posts yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-white border rounded-lg p-5">
+            <h2 class="font-semibold text-gray-900">Quick links</h2>
+            <div class="mt-4 space-y-2 text-sm">
+                <a class="block text-primary-600 hover:underline" href="/oyu/api/posts">Content API</a>
+                <a class="block text-primary-600 hover:underline" href="/oyu/api/comments/list">Guestbook API</a>
+                <a class="block text-primary-600 hover:underline" href="/oyu/api/system/info">System information</a>
+                <a class="block text-primary-600 hover:underline" href="/oyu/api/system/ping?host=127.0.0.1">Connectivity check</a>
+            </div>
+            <p class="text-xs text-gray-400 mt-6">OYUCMS {{ OYU_VERSION }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

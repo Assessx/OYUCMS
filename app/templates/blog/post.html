@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - OYUCMS{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <article class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div class="text-sm text-gray-500 mb-3">
+            {% if post.category %}<span class="mr-3">{{ post.category.name }}</span>{% endif %}
+            {{ post.published_at.strftime('%Y-%m-%d') if post.published_at else '' }}
+            · {{ post.views }} views · {{ post.reading_time }} min read
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900">{{ post.title }}</h1>
+        <div class="mt-4 flex items-center text-sm text-gray-600">
+            <img class="h-8 w-8 rounded-full mr-2" src="{{ post.author.get_avatar_url() }}" alt="">
+            {{ post.author.username }}
+        </div>
+        <div class="prose max-w-none mt-6 text-gray-800">
+            {{ post.body|safe }}
+        </div>
+    </article>
+
+    <section class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Comments ({{ comments|length }})</h2>
+        <div class="space-y-4">
+            {% for c in comments %}
+            <div class="border-b pb-3">
+                <div class="text-xs text-gray-500">{{ c.author.username }} · {{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                <div class="mt-1 text-gray-800">{{ c.body }}</div>
+            </div>
+            {% else %}
+            <p class="text-sm text-gray-500">No comments yet.</p>
+            {% endfor %}
+        </div>
+
+        {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('blog.add_comment', slug=post.slug) }}" class="mt-6">
+            {{ form.hidden_tag() }}
+            <div class="flex gap-2">
+                {{ form.body(class="border rounded px-3 py-2 text-sm flex-1", rows="2", placeholder="Write a comment...") }}
+                {{ form.submit(class="bg-primary-600 text-white px-4 py-2 rounded text-sm") }}
+            </div>
+        </form>
+        {% else %}
+        <p class="mt-4 text-sm text-gray-500"><a class="text-primary-600" href="{{ url_for('auth.login') }}">Log in</a> to comment.</p>
+        {% endif %}
+    </section>
+
+    {% if related_posts %}
+    <section class="mt-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-4">Related posts</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+            {% for p in related_posts %}
+            <a href="{{ url_for('blog.post_detail', slug=p.slug) }}" class="bg-white border rounded-lg p-4 hover:shadow">
+                <div class="font-medium text-gray-900">{{ p.title }}</div>
+                <div class="text-xs text-gray-500 mt-2">{{ p.get_excerpt(80) }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

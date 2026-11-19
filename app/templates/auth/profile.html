@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - OYUCMS{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-sm border p-6">
+        <h1 class="text-2xl font-bold text-gray-900">Profile</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ current_user.email }} · role: {{ current_user.role }}</p>
+        <form method="post" class="mt-6 space-y-4">
+            {{ form.hidden_tag() }}
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Username</label>
+                {{ form.username(class="mt-1 w-full border rounded px-3 py-2 text-sm") }}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                {{ form.email(class="mt-1 w-full border rounded px-3 py-2 text-sm") }}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Bio</label>
+                {{ form.bio(class="mt-1 w-full border rounded px-3 py-2 text-sm", rows="3") }}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Avatar URL</label>
+                {{ form.avatar_url(class="mt-1 w-full border rounded px-3 py-2 text-sm") }}
+            </div>
+            {{ form.submit(class="bg-primary-600 text-white px-4 py-2 rounded text-sm") }}
+        </form>
+    </div>
+</div>
+{% endblock %}
